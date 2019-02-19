@@ -12,7 +12,7 @@ setuptools.setup(
     version="0.0.1",
     author="Xiang Wang",
     author_email="ramwin@qq.com",
-    description="启查查的api",
+    description="企查查的api",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ramwin/qichacha",
