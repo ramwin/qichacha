@@ -5,3 +5,13 @@
 
 class APIException(Exception):
     pass
+
+
+class NotFoundException(APIException):
+    desc = "企查查自己没找到"
+    pass
+
+
+class StupidException(NotFoundException):
+    desc = "企查查自己没找到，还说是传入参数有误，请检查。误人子弟"
+    pass

@@ -41,6 +41,9 @@ class QichachaClient(object):
             self.logger.error(response.status_code)
             raise exceptions.APIException("企查查response不正确")
         data_json = response.json()
+        if data_json["Status"] in ["202"]:
+            if data_json["Message"] == "传入参数有误，请检查":
+                raise exceptions.StupidException()
         if data_json["Status"] not in ["200", "201"]:
             self.logger.error(data_json)
             raise exceptions.APIException("企查查状态码不正确")
@@ -77,6 +80,11 @@ class QichachaClient(object):
              "Content":, "企查查是一站式企业信息查询平台，通过查询企业信息，
              查看评价，帮助查询人获取相关信息。隶属于苏州朗动网络科技有限公司"
             },
+            具体的response
+        )
+        如果公司不存在， 返回
+        (
+            None,
             具体的response
         )
         [接口文档地址](http://www.yjapi.com/DataApi/Api?apiCode=215)
