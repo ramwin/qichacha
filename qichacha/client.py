@@ -3,6 +3,7 @@
 # Xiang Wang @ 2019-02-18 15:57:33
 
 
+from __future__ import unicode_literals
 import logging
 import requests
 import time
