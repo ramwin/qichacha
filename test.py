@@ -17,6 +17,11 @@ class TestQichachaAPI(unittest.TestCase):
         results = client.search(name="小桔科技")[0]
         self.assertIsInstance(results, list)
 
+    def test_brief_intro(self):
+        intro, res = client.get_brief_intro("苏州朗动网络科技有限公司")
+        self.assertIsInstance(intro["Content"], str)
+        self.assertGreater(len(intro["Content"]), 57)
+
 
 if __name__ == '__main__':
     unittest.main()
