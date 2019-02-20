@@ -2,9 +2,17 @@
 # -*- coding: UTF-8 -*-
 # Xiang Wang @ 2019-02-18 15:50:07
 
+
 from qichacha import QichachaClient
 from qichacha import exceptions
 import unittest
+import six
+
+
+if six.PY2:
+    input = raw_input
+else:
+    pass
 
 
 key = input("请输入您的key: ")
@@ -22,7 +30,10 @@ class TestQichachaAPI(unittest.TestCase):
 
     def test_brief_intro(self):
         intro, res = client.get_brief_intro("苏州朗动网络科技有限公司")
-        self.assertIsInstance(intro["Content"], str)
+        if six.PY2:
+            self.assertIsInstance(intro["Content"], unicode)
+        else:
+            self.assertIsInstance(intro["Content"], str)
         self.assertGreater(len(intro["Content"]), 57)
 
         intro, res = client.get_brief_intro("不存在的一个公司")
