@@ -11,13 +11,13 @@ import six
 
 if six.PY2:
     input = raw_input
-else:
-    pass
+elif six.PY3:
+    unicode = str
 
 
 key = input("请输入您的key: ")
 secretkey = input("请输入您的secretkey: ")
-client = QichachaClient(key=key, secretkey=secretkey, logger=None)
+client = QichachaClient(key=key, secretkey=secretkey)
 
 
 class TestQichachaAPI(unittest.TestCase):
@@ -38,6 +38,13 @@ class TestQichachaAPI(unittest.TestCase):
 
         intro, res = client.get_brief_intro("不存在的一个公司")
         self.assertIsNone(intro, None)
+
+    def test_detail(self):
+        detail, res = client.get_detail("北京小桔科技有限公司")
+        self.assertIsInstance(detail, dict)
+        self.assertEqual(detail["KeyNo"], "4659626b1e5e43f1bcad8c268753216e")
+        self.assertEqual(detail["No"], "110108015068911")
+        self.assertEqual(detail["OperName"], u"程维")
 
 
 if __name__ == '__main__':

@@ -10,10 +10,12 @@ import time
 import hashlib
 from . import exceptions
 
+logger = logging.getLogger()
+
 
 class QichachaClient(object):
 
-    def __init__(self, key, secretkey, logger=None):
+    def __init__(self, key, secretkey, logger=logger):
         """
         key, secretkey请从 [企查查](http://www.yjapi.com/DataCenter/MyData)获取
         logger是一个logger
@@ -21,8 +23,6 @@ class QichachaClient(object):
         self.key = key
         self.logger = logger
         self.secretkey = secretkey
-        if logger is None:
-            self.logger = logging.getLogger()
 
     def get_token(self):
         """
@@ -44,6 +44,7 @@ class QichachaClient(object):
         data_json = response.json()
         if data_json["Status"] in ["202"]:
             if data_json["Message"] == "传入参数有误，请检查":
+                self.logger.warning(data_json)
                 raise exceptions.StupidException()
         if data_json["Status"] not in ["200", "201"]:
             self.logger.error(data_json)
@@ -100,6 +101,84 @@ class QichachaClient(object):
             params={
                 "key": self.key,
                 "companyName": name,
+                "dtype": "json",
+            },
+        )
+        self.check(response)
+        data_json = response.json()
+        return data_json["Result"], response
+
+    def get_detail(self, name):
+        """
+        企业关键词精确获取详细信息, 返回
+        (
+            {
+                "Partners": [
+                    "StockName": "程维",
+                    "StockerType": "自然人股东",
+                ],
+                "Employees": [
+                    {"Name": "程维", "Job": "执行董事",}
+                ],
+                "ContactInfo": {
+                    "WebSite": [
+                        {
+                            "Name": null,
+                            "Url": "www.xiaojukeji.com"
+                        }
+                    ],
+                    "PhoneNumber": "010-62682929",
+                    "Email": null
+                },
+                "Industry": {
+                    "IndustryCode": "M",
+                    "Industry": "科学研究和技术服务业",
+                    "SubIndustryCode": "75",
+                    "SubIndustry": "科技推广和应用服务业",
+                    "MiddleCategoryCode": "759",
+                    "MiddleCategory": "其他科技推广服务业",
+                    "SmallCategoryCode": "7590",
+                    "SmallCategory": "其他科技推广服务业"
+                },
+                "KeyNo": "4659626b1e5e43f1bcad8c268753216e",
+                "Name": "北京小桔科技有限公司",
+                "No": "110108015068911",
+                "BelongOrg": "北京市工商行政管理局海淀分局",
+                "OperName": "程维",
+                "StartDate": "2012-07-10T00:00:00",
+                "EndDate": null,
+                "Status": "开业",
+                "Province": "BJ",
+                "UpdatedDate": "2018-06-19T00:15:47",
+                "CreditCode": "9111010859963405XW",
+                "RegistCapi": "1000万人民币元",
+                "EconKind": "有限责任公司(自然人投资或控股)",
+                "Address": "北京市海淀区东北旺西路8号院35号楼5层501室",
+                "Scope": "技术开发、技术咨询、技术服务、技术推广;基础软件服务;应用",
+                "TermStart": "2012-07-10T00:00:00",
+                "TeamEnd": "2032-07-09T00:00:00",
+                "CheckDate": "2017-12-11T00:00:00",
+                "OrgNo": "59963405-X",
+                "IsOnStock": "0",
+                "StockNumber": null,
+                "StockType": null,
+                "OriginalName": [],
+                "ImageUrl": "https://co-image.qichacha.com/CompanyImage/4659626b1e5e43f1bcad8c268753216e.jpg"
+            },
+            具体的response
+        )
+        [接口文档地址](http://www.yjapi.com/DataApi/Api?apicode=410)
+        """
+        token_dict = self.get_token()
+        response = requests.get(
+            url="http://api.qichacha.com/ECIV4/GetDetailsByName",
+            headers={
+                "Token": token_dict["token"],
+                "Timespan": token_dict["timespan"],
+            },
+            params={
+                "key": self.key,
+                "keyword": name,
                 "dtype": "json",
             },
         )
