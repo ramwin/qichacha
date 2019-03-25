@@ -184,4 +184,6 @@ class QichachaClient(object):
         )
         self.check(response)
         data_json = response.json()
+        if data_json["Status"] == "201":
+            raise exceptions.NotFoundException("企查查没有查到结果")
         return data_json["Result"], response
