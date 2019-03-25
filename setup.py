@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="qichacha",
-    version="0.0.7",
+    version="0.0.8",
     author="Xiang Wang",
     author_email="ramwin@qq.com",
     description="企查查的api",
