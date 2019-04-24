@@ -187,3 +187,31 @@ class QichachaClient(object):
         if data_json["Status"] == "201":
             raise exceptions.NotFoundException("企查查没有查到结果")
         return data_json["Result"], response
+
+    def get_road_map(self, name):
+        """
+        获取企业的发展历程，返回
+        有待完善
+        (
+            {},
+            具体的response
+        )
+        """
+        token_dict = self.get_token()
+        response = requests.get(
+            url="http://api.qichacha.com/ECIV4/GetRoadMap",
+            headers={
+                "Token": token_dict["token"],
+                "Timespan": token_dict["timespan"],
+            },
+            params={
+                "key": self.key,
+                "companyName": name,
+                "dtype": "json",
+            },
+        )
+        self.check(response)
+        data_json = response.json()
+        if data_json["Status"] == "201":
+            raise exceptions.NotFoundException("企查查没有查到结果")
+        return data_json["Result"], response

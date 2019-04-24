@@ -48,6 +48,17 @@ class TestQichachaAPI(unittest.TestCase):
         with self.assertRaises(exceptions.NotFoundException):
             detail, res = client.get_detail("约客咖啡")
 
+    def test_road_map(self):
+        detail, res = client.get_road_map("北京小桔科技有限公司")
+        import ipdb
+        ipdb.set_trace()
+        self.assertIsInstance(detail, dict)
+        self.assertEqual(detail["KeyNo"], "4659626b1e5e43f1bcad8c268753216e")
+        self.assertEqual(detail["No"], "110108015068911")
+        self.assertEqual(detail["OperName"], u"程维")
+        with self.assertRaises(exceptions.NotFoundException):
+            detail, res = client.get_detail("约客咖啡")
+
 
 if __name__ == '__main__':
     unittest.main()
