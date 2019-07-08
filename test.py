@@ -47,6 +47,8 @@ class TestQichachaAPI(unittest.TestCase):
         self.assertEqual(detail["OperName"], u"程维")
         with self.assertRaises(exceptions.NotFoundException):
             detail, res = client.get_detail("约客咖啡")
+        with self.assertRaises(exceptions.StupidException):
+            detail, res = client.get_detail("上海汉盛律师事务所")
 
 
 if __name__ == '__main__':
