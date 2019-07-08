@@ -10,18 +10,21 @@ import time
 import hashlib
 from . import exceptions
 
-logger = logging.getLogger()
+default_logger = logging.getLogger(__name__)
 
 
 class QichachaClient(object):
 
-    def __init__(self, key, secretkey, logger=logger):
+    def __init__(self, key, secretkey, logger=None):
         """
         key, secretkey请从 [企查查](http://www.yjapi.com/DataCenter/MyData)获取
         logger是一个logger
         """
         self.key = key
-        self.logger = logger
+        if logger is None:
+            self.logger = default_logger
+        else:
+            self.logger = logger
         self.secretkey = secretkey
 
     def get_token(self):
@@ -42,8 +45,10 @@ class QichachaClient(object):
             self.logger.error(response.status_code)
             raise exceptions.APIException("企查查response不正确")
         data_json = response.json()
-        if data_json["Status"] in ["202"]:
-            if data_json["Message"] == "传入参数有误，请检查":
+        if data_json["Status"] in ["202", "208"]:
+            if data_json["Message"] in [
+                    "传入参数有误，请检查",
+                    "此接口不支持此公司类型查询"]:
                 self.logger.warning(data_json)
                 raise exceptions.StupidException()
         if data_json["Status"] not in ["200", "201"]:
